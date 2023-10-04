@@ -89,15 +89,15 @@
 				<section>
 					No service registration?<br>
 					No Consul power<br><p>&nbsp;</p>
-					<pre><file>Without service registration</file><code data-trim data-noescape><script type="text/template">
-						$ dig @127.0.0.1 -p 8600 +noall +question +answer active.vault.service.consul
-						;active.vault.service.consul.	IN	A
-					</script></code></pre>
 					<pre><file><strong>With</strong> service registration</file><code data-trim data-noescape><script type="text/template">
 						$ dig @127.0.0.1 -p 8600 +noall +question +answer active.vault.service.consul
 						;active.vault.service.consul. IN A
 						active.vault.service.consul. 0 IN CNAME vault01.node.service.consul.
 						vault01.node.service.consul. 0 IN	A	10.156.189.163
+					</script></code></pre>
+					<pre><file><strong>Without</strong> service registration</file><code data-trim data-noescape><script type="text/template">
+						$ dig @127.0.0.1 -p 8600 +noall +question +answer active.vault.service.consul
+						;active.vault.service.consul.	IN	A
 					</script></code></pre>
 					<aside class="notes">
 						<p>If you choose Integrated Storage and you don't include the Consul <code>service_registration</code> stanza into your Vault configuration, Vault will not automatically register itself. Thus not benefitting of the Consul health checks and tags (think of the <code>active</code> tag for instance).</p>
@@ -223,6 +223,13 @@
 						<p></p>
 					</aside>
 				</section>
+				<section>
+					<p><code>-config-dir</code></p>
+					<p>Segment your configuration</p>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
 			</section>
 
 
@@ -312,7 +319,7 @@
 				<section>
 					Custom logration
 					<pre><file>❯ cat /etc/logrotate.d/vault</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-					/var/log/vault/audit.log {
+					/var/log/vault/vault.log {
 						rotate 7
 						daily
 						notifempty
