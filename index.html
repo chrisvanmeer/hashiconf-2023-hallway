@@ -1,40 +1,103 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+	<title>HashiConf 2023 - Things I learned...</title>
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/white.css">
+
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	<style>
+		.reveal small {
+			vertical-align: middle;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+        <img height="200" data-src="at.png">
+        <h6>Chris van Meer</h6>
+      </section>
+      <section>
+        Things I learned<br>
+        while integrating<br>
+        HashiCorp products<br>
+        together
+      </section>
+			<section>
+				<pre><code data-line-numbers data-trim data-noescape><script type="text/template">
+					grep -E -i -w 'Consul|Vault|Nomad' /hashicorp/hashistack
+				</script></code></pre>
+			</section>
+			<section>
+				<section><h1>📖</h1><h3>Documentation</h3></section>
+				<section>No integration guide</section>
+				<section>Scattered</section>
+			</section>
+			<section>
+				<section><h1>➰</h1><h3>Dependencies</h3></section>
+				<section><h2>🍰</h2>Cake layering</section>
+				<section>Determine who relies on who</section>
+				<section>
+					Vault storage backend<br>on Consul (KV)<br>
+					<small>- vs -</small><br>
+					Vault Integrated Storage<br>with Consul service integration
+				</section>
+				<section>No service integration?<br>No Consul power</section>
+				<section>Backup conundrum<br><small>More on that later...</small></section>
+			</section>
+			<section>
+				<section><h1>🚚</h1><h3>Deployment</h3></section>
+				<section>IaC<br><small>- vs -</small><br>CaC</section>
+			</section>
+			<section>
+				<section><h1>🎟</h1><h3>Tokens</h3><h6>Configuration</h6></section>
+				<section>Bla</section>
+			</section>
+			<section>
+				<section><h1>🗃️</h1><h3>Logs / Logging</h3></section>
+				<section>Bla</section>
+			</section>
+			<section>
+				<section><h1>🗄</h1><h3>Backup</h3></section>
+				<section>Vault on Consul? Backup Consul KV store</section>
+			</section>
+			<section>
+				<section><h1>👷</h1><h3>Tokens</h3><h6>Operations</h6></section>
+				<section>Bla</section>
+			</section>
+			<section>
+				<section><h1>ــــــــــﮩ٨ـ❤️ﮩ٨ـﮩﮩ٨ـ</h1><h3>Metrics / Monitoring</h3></section>
+				<section>Bla</section>
+			</section>
+				<section><h1>🙏🏼</h1><h3>Thank you</h3></section>
 		</div>
+	</div>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+	<script>
+		// More info about initialization & config:
+		// - https://revealjs.com/initialization/
+		// - https://revealjs.com/config/
+		Reveal.initialize({
+			hash: true,
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+		});
+	</script>
+</body>
+
 </html>
