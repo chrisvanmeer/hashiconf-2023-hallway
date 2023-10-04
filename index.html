@@ -507,7 +507,7 @@
 						# assumes CONSUL_HTTP_TOKEN is set
 
 						find /srv/consul/backups -name "*.json" -type f -mtime +7 -exec rm {} \;
-						/usr/bin/consul kv export vault/ > /srv/consul/backups/consul_vault_kv_${ts}.json
+						/usr/bin/consul kv export vault/ > /srv/consul/backups/vault_kv_${ts}.json
 					</script></code></pre>
 					<aside class="notes">
 						<p></p>
@@ -519,7 +519,7 @@
 			<section>
 				<section><h1>👷</h1><h3>Tokens</h3><h6>Operations</h6></section>
 				<section>
-					Using Vault?<br>
+					<p>Using Vault?</p>
 					Check out the <code>consul</code> and <code>nomad</code> secrets engines.
 					<aside class="notes">
 						<p></p>
@@ -585,8 +585,8 @@
 			<section>
 				<section><h1>ــــــــــﮩ٨ـ❤️ﮩ٨ـﮩﮩ٨ـ</h1><h3>Metrics / Monitoring</h3></section>
 				<section>
-					Enable metrics<br>
-					They will save you someday
+					<p>Enable metrics</p>
+					<p>They will save you someday</p>
 					<pre><file>❯ cat /etc/nomad.d/prometheus.hcl</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 						telemetry {
 							disable_hostname          = true
@@ -599,24 +599,12 @@
 				</section>
 				<section>
 					Same goes for Consul and Vault
-					<pre><file>❯ cat /etc/consul.d/prometheus.hcl</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						telemetry {
-							disable_hostname          = true
-							prometheus_retention_time = "12h"
-						}
-					</script></code></pre>
-					<pre><file>❯ cat /etc/vault.d/prometheus.hcl</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						telemetry {
-							disable_hostname          = true
-							prometheus_retention_time = "12h"
-						}
-					</script></code></pre>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					For Vault you will need a token with the following capabilities<br>
+					<p>Vault token capabilities</p>
 					<pre><code data-trim data-noescape><script type="text/template">
 						$ vault policy write pol-metrics - <<EOF
 						path "sys/metrics" {
