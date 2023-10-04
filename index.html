@@ -665,7 +665,6 @@
 		// - https://revealjs.com/config/
 		Reveal.initialize({
 			hash: true,
-			margin: 0.2,
 
 			// Learn about plugins: https://revealjs.com/plugins/
 			plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
@@ -675,15 +674,15 @@
 			//retrieves all the .line elements from the current slide
 			const lines = document.querySelectorAll('.line');
 
-			var white  = '#ffffff';
-			var consul = '#e03875';
-			var nomad = '#00ca8e';
+			var white     = '#ffffff';
+			var consul    = '#e03875';
+			var nomad     = '#00ca8e';
 			var terraform = '#7b42bc';
-			var packer = '#02a8ef';
-			var vault = '#ffd814';
-			var boundary = '#f24c53';
-			var waypoint = '#14c6cb';
-			var vagrant = '#1868f2';
+			var packer    = '#02a8ef';
+			var vault     = '#ffd814';
+			var boundary  = '#f24c53';
+			var waypoint  = '#14c6cb';
+			var vagrant   = '#1868f2';
 
 			//color map where each slide index is coupled to a given color
 			const colormap = [
@@ -705,7 +704,7 @@
 			//(rotating among all the available colors)
 			const currentColor = colormap[event.indexh % colormap.length];
 
-			//set the css prop outline-color of each .line with the current color
+			//set the css prop background of each .line with the current color
 			lines.forEach(line => line.style.background = currentColor);
 		});
 	</script>
