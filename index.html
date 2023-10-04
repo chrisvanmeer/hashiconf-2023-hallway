@@ -317,9 +317,25 @@
 					</aside>
 				</section>
 				<section>
-					Custom logration
+					Enable Vault audit logging
+					<pre><code data-trim data-noescape><script type="text/template">
+						❯ vault audit enable file file_path=/var/log/vault/audit.log
+						❯ vault audit enable syslog
+					</script></code></pre>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
+				<section>
+					No log rotation
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
+				<section>
+					Let's fix that
 					<pre><file>❯ cat /etc/logrotate.d/vault</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-					/var/log/vault/vault.log {
+					/var/log/vault/audit.log {
 						rotate 7
 						daily
 						notifempty
@@ -333,16 +349,6 @@
 						dateext
 						dateformat %Y-%m-%d.
 					}
-					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					Enable Vault audit logging
-					<pre><code data-trim data-noescape><script type="text/template">
-						❯ vault audit enable file file_path=/var/log/vault/audit.log
-						❯ vault audit enable syslog
 					</script></code></pre>
 					<aside class="notes">
 						<p></p>
