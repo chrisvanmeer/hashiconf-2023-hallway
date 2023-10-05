@@ -395,10 +395,10 @@
 				<section>
 					Query file audit
 					<pre><code data-trim data-noescape><script type="text/template">
-						❯ jq 'select(.time | contains("2023-10-05"))' | \
+						❯ jq 'select(.time | contains("2023-10-04"))' | \
 								jq -s '.[0]' /var/log/vault/audit.log
 						{
-							"time": "2023-10-05T07:49:30.542609276Z",
+							"time": "2023-10-04T07:49:30.542609276Z",
 							"type": "request",
 							"auth": {
 								"display_name": "userpass-atcomputing",
@@ -411,7 +411,7 @@
 							(..)
 						}
 					</script></code></pre>
-					<small>Retrieves first log entry of October 5th</small>
+					<small>Retrieves first log entry of October 4th</small>
 					<aside class="notes">
 						<p></p>
 					</aside>
