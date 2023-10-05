@@ -66,6 +66,22 @@
 						<p>You may not even find basic things like the <code>service_registration</code> stanza of Vault.</p>
 					</aside>
 				</section>
+				<section data-auto-animate data-auto-animate-easing="cubic-bezier(0.770, 0.000, 0.175, 1.000)">
+					<p>Separate products</p>
+					<div class="r-hstack justify-center">
+						<div data-id="box1" data-auto-animate-delay="0" style="background: #e03875; width: 150px; height: 100px; margin: 10px;"></div>
+						<div data-id="box2" data-auto-animate-delay="0.1" style="background: #ffd814; width: 150px; height: 100px; margin: 10px;"></div>
+						<div data-id="box3" data-auto-animate-delay="0.2" style="background: #00ca8e; width: 150px; height: 100px; margin: 10px;"></div>
+					</div>
+				</section>
+				<section data-auto-animate data-auto-animate-easing="cubic-bezier(0.770, 0.000, 0.175, 1.000)">
+					<p>Integrated stack</p>
+					<div class="r-stack">
+						<div data-id="box1" style="background: #e03875; width: 300px; height: 300px; border-radius: 200px;"></div>
+						<div data-id="box2" style="background: #ffd814; width: 200px; height: 200px; border-radius: 200px;"></div>
+						<div data-id="box3" style="background: #00ca8e; width: 100px; height: 100px; border-radius: 200px;"></div>
+					</div>
+				</section>
 			</section>
 
 
@@ -748,7 +764,9 @@
 		// - https://revealjs.com/config/
 		Reveal.initialize({
 			hash: true,
-
+			verticator: {
+				scale: 0.6
+			},
 			// Learn about plugins: https://revealjs.com/plugins/
 			plugins: [RevealMarkdown, RevealHighlight, RevealNotes, Verticator]
 		});
