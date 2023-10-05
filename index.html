@@ -21,23 +21,24 @@
 	<div class="reveal">
 		<div class="slides">
 
+
+			<section>
+        <h2>Things I learned<br>
+        while integrating<br>
+        HashiCorp products<br>
+        together</h2>
+      </section>
+
+
 			<section>
         <img height="200" data-src="at.png">
-        <h6>Chris van Meer</h6>
+        <h3>Chris van Meer</h3>
 				<aside class="notes">
 					<p>Welcome.</p>
 					<p>My name is Chris van Meer and I live in The Netherlands.</p>
 					<p>I am a consultant and a trainer at AT Computing where we help our customers implement open source solutions.</p>
 					<p>I am also a HashiCorp Ambassador and one of the Amsterdam HUG leaders.</p>
 				</aside>
-      </section>
-
-
-			<section>
-        Things I learned<br>
-        while integrating<br>
-        HashiCorp products<br>
-        together
       </section>
 
 
@@ -54,13 +55,13 @@
 			<section>
 				<section><h1>📖</h1><h3>Documentation</h3></section>
 				<section>
-					No integration guide
+					<p>No integration guide</p>
 					<aside class="notes">
 						<p>There is no total integration guide.</p>
 					</aside>
 				</section>
 				<section>
-					Scattered
+					<p>Scattered</p>
 					<aside class="notes">
 						<p>It is all scattered. Sure, the respective products list all available options, but no guide on which ones to use in which specific (integration) cases.</p>
 						<p>You may not even find basic things like the <code>service_registration</code> stanza of Vault.</p>
@@ -89,22 +90,22 @@
 				<section><h1>➰</h1><h3>Dependencies</h3></section>
 				<!-- <section><h2>🍰</h2>Cake layering</section> -->
 				<section>
-					Determine who relies on who
+					<p>Determine who relies on who</p>
 					<aside class="notes">
 						<p>Choosing which program relies on what other(s) can change some of the behavior.</p>
 					</aside>
 				</section>
 				<section>
-					Vault storage backend<br>on Consul (KV)<br>
+					<p>Vault storage backend<br>on Consul (KV)<br>
 					<small>- vs -</small><br>
-					Vault Integrated Storage<br>with Consul service registration
+					Vault Integrated Storage</p>
 					<aside class="notes">
 						<p>Think of what the differences might be if you would were to choose the <code>consul</code> storage backend for Vault. Vault will automatically register itself with Consul, that's a big plus...but now also relies on the Consul leader state.</p>
 					</aside>
 				</section>
 				<section>
-					No service registration?<br>
-					No Consul power<br><p>&nbsp;</p>
+					<p>No service registration?<br>
+					No Consul power<br><br></p>
 					<pre><file><strong>With</strong> service registration</file><code data-trim data-noescape><script type="text/template">
 						$ dig @127.0.0.1 -p 8600 +noall +question +answer active.vault.service.consul
 						;active.vault.service.consul. IN A
@@ -120,11 +121,12 @@
 					</aside>
 				</section>
 				<section>
-					Consul service registration for Vault
+					<p>Consul service registration for Vault</p>
 					<pre><file>❯ cat /etc/vault.d/consul.hcl</file><code data-trim data-noescape><script type="text/template">
 						service_registration "consul" {
-							scheme      = "https"
 							address     = "127.0.0.1:8501"
+							scheme      = "https"
+							token       = "<consul-token-here>"
 							tls_ca_file = "/etc/consul.d/consul-agent-ca.pem"
 						}
 					</script></code></pre>
@@ -133,9 +135,9 @@
 					</aside>
 				</section>
 				<section>
-					Consul storage backend for Vault?<br>
+					<p>Consul storage backend for Vault?<br>
 					Backup conundrum<br>
-					<small>More on that later...</small>
+					<small>More on that later...</small></p>
 					<aside class="notes">
 						<p>We'll see what kind of implications this has more towards the end of the session.</p>
 					</aside>
@@ -146,16 +148,16 @@
 			<section>
 				<section><h1>🚚</h1><h3>Deployment</h3></section>
 				<section>
-					IaC<br>
+					<p>IaC<br>
 					<small>- vs -</small><br>
-					CaC
+					CaC</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					Terraform
-					<pre><file>❯ cat vault.tf</file><code data-line-numbers="4-6|7-9|10-11" data-trim data-noescape><script type="text/template">
+					<p>Terraform</p>
+					<pre><file>❯ cat vault.tf</file><code data-line-numbers="4-6|7|8-11" data-trim data-noescape><script type="text/template">
 						(..)
 						provisioner "remote-exec" {
 							inline = [
@@ -176,8 +178,8 @@
 					</aside>
 				</section>
 				<section>
-					Ansible
-					<pre><file>❯ cat vault.yml</file><code data-line-numbers="1-15|17-20|22-31" data-trim data-noescape><script type="text/template">
+					<p>Ansible</p>
+					<pre><file>❯ cat vault.yml</file><code data-line-numbers="1-10|12-20|22-31" data-trim data-noescape><script type="text/template">
 						- name: Ensure Hashicorp signing key
 							ansible.builtin.apt_key:
 								url: https://apt.releases.hashicorp.com/gpg
@@ -215,7 +217,7 @@
 						</aside>
 					</section>
 				<section>
-					Terraform & Ansible
+					<p>Terraform & Ansible</p>
 					<pre><file>❯ cat inventory.tf</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 						resource "local_file" "ansible_inventory" {
 							content = templatefile("inventory.tmpl",
@@ -240,8 +242,8 @@
 					</aside>
 				</section>
 				<section>
-					<p><code>-config-dir</code></p>
-					<p>Segment your configuration</p>
+					<p><code>-config-dir</code><br>
+					Segment your configuration</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -252,19 +254,21 @@
 			<section>
 				<section><h1>🎟</h1><h3>Tokens</h3><h6>Configuration</h6></section>
 				<section>
-					Avoid tokens in main configuration files
+					<p>Avoid tokens in main configuration files<br>
+					<small>Sometimes you cannot avoid it</small></p>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					Sensitive data in <code>ENV</code> variables
+					<p>Sensitive data in <code>ENV</code> variables<br>
+					<small>Whenever you can</small></p>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					No sensitive data in version control
+					<h2>No sensitive data in version control</h2>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -293,7 +297,7 @@
 						}
 					</script></code></pre>
 					<pre><file>❯ cat /etc/nomad.d/nomad.env</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						CONSUL_HTTP_TOKEN = "3ebda624-ac52-4e45-8534-1e13b2294194"
+						CONSUL_HTTP_TOKEN="3ebda624-ac52-4e45-8534-1e13b2294194"
 					</script></code></pre>
 					<aside class="notes">
 						<p></p>
@@ -305,7 +309,7 @@
 			<section>
 				<section><h1>🗃️</h1><h3>Logs / Logging</h3></section>
 				<section>
-					Consul + Nomad
+					<p>Consul + Nomad</p>
 					<pre><file>❯ cat /etc/consul.d/logging.hcl</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 						enable_syslog        = true
 						log_level            = "INFO"
@@ -327,13 +331,13 @@
 					</aside>
 				</section>
 				<section>
-					Vault?
+					<p>Vault?</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					Enable Vault file audit logging
+					<p>Enable Vault file audit logging</p>
 					<pre><code data-trim data-noescape><script type="text/template">
 						❯ vault audit enable file file_path=/var/log/vault/audit.log
 					</script></code></pre>
@@ -342,17 +346,17 @@
 					</aside>
 				</section>
 				<section>
-					No log rotation
+					<p>No log rotation</p>
 					<pre><code data-trim data-noescape><script type="text/template">
 						❯ ls -lh /var/log/vault/audit.log
-						-rw------- 1 vault vault 5.3G Oct  5 09:31 /var/log/vault/audit.log
+						-rw------- 1 vault vault 1.3G Oct  5 09:31 /var/log/vault/audit.log
 					</script></code></pre>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					Let's fix that
+					<p>Let's fix that</p>
 					<pre><file>❯ cat /etc/logrotate.d/vault</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 					/var/log/vault/audit.log {
 						rotate 7
@@ -374,7 +378,7 @@
 					</aside>
 				</section>
 				<section>
-					With custom log rotation
+					<p>With custom log rotation</p>
 					<pre><code data-trim data-noescape><script type="text/template">
 						❯ ls -lh /var/log/vault/
 						total 348K
@@ -392,7 +396,16 @@
 					</aside>
 				</section>
 				<section>
-					Enable Vault syslog audit logging
+					<p>Enable Vault syslog audit logging</p>
+					<pre><code data-trim data-noescape><script type="text/template">
+						❯ vault audit enable syslog
+					</script></code></pre>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
+				<section>
+					Vault syslog in separate file
 					<pre><file>❯ cat /etc/rsyslog.d/30-vault.conf</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 						if $syslogfacility-text == "auth" and
 						   $syslogtag startswith "vault"
@@ -402,14 +415,14 @@
 					<pre><code data-trim data-noescape><script type="text/template">
 						❯ chmod 770 /var/log/vault/
 						❯ chown vault:syslog /var/log/vault/
-						❯ vault audit enable syslog
+						❯ systemctl restart rsyslog.service
 					</script></code></pre>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					Query file audit
+					<p>Query file audit</p>
 					<pre><code data-trim data-noescape><script type="text/template">
 						❯ jq 'select(.time | contains("2023-10-04"))' | \
 								jq -s '.[0]' /var/log/vault/audit.log
@@ -433,7 +446,7 @@
 					</aside>
 				</section>
 				<section>
-					Query syslog audit
+					<p>Query syslog audit</p>
 					<pre><code data-trim data-noescape><script type="text/template">
 						❯ grep '^Oct  5 ' /var/log/vault/syslog.log | sed -e 's/^.*\]: //' \
 								-e 's/hmac-sha256:[a-z0-9]*//g' | jq -s '.[0]'
@@ -464,14 +477,14 @@
 			<section>
 				<section><h1>🗄</h1><h3>Backup</h3></section>
 				<section>
-					Community Edition?<br>
-					Manual backup
+					<p>Community Edition?<br>
+					Manual backup</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					Consul
+					<p>Consul</p>
 					<pre><file>❯ cat /srv/consul/consul-snapshot.sh</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 						#!/bin/bash
 
@@ -487,7 +500,7 @@
 					</aside>
 				</section>
 				<section>
-					Vault
+					<p>Vault</p>
 					<pre><file>❯ cat /srv/vault/vault-snapshot.sh</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 						#!/bin/bash
 
@@ -507,7 +520,24 @@
 					</aside>
 				</section>
 				<section>
-					Nomad
+					<p>Vault on Consul?<br>
+					Backup the Consul KV store</p>
+					<pre><file>❯ cat /srv/consul/consul-kv-backup.sh</file><code data-line-numbers data-trim data-noescape><script type="text/template">
+						#!/bin/bash
+
+						ts=$(date "+%Y%m%d%H%M%S")
+						# assumes $CONSUL_HTTP_ADDR  is set
+						# assumes $CONSUL_HTTP_TOKEN is set
+
+						find /srv/consul/backups -name "*.json" -type f -mtime +7 -exec rm {} \;
+						/usr/bin/consul kv export vault/ > /srv/consul/backups/vault_kv_${ts}.json
+					</script></code></pre>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
+				<section>
+					<p>Nomad</p>
 					<pre><file>❯ cat /srv/nomad/nomad-snapshot.sh</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 						#!/bin/bash
 
@@ -523,18 +553,17 @@
 					</aside>
 				</section>
 				<section>
-					Enterprise Edition?<br>
-					Snapshot agent<br>
+					<p>Enterprise Edition?<br>
+					Snapshot agent</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					Configuration
-					<pre><file>❯ cat /etc/consul-snapshot.d/consul-snapshot.json</file><code data-line-numbers data-trim data-noescape><script type="text/template">
+					<pre><file>❯ cat /etc/consul-snapshot.d/consul-snapshot.json</file><code data-line-numbers="|8-9|15-17" data-trim data-noescape><script type="text/template">
 						{
 							"snapshot_agent": {
-								"http_addr": "127.0.0.1:8500",
+								"http_addr": "127.0.0.1:8501",
 								"token": "99bdf0ce-232b-666e-912c-2649a055ca2f",
 								"datacenter": "",
 								"license_path": "/etc/consul.d/consul.hclic",
@@ -557,7 +586,6 @@
 					</aside>
 				</section>
 				<section>
-					Unit file
 					<pre><file>❯ systemctl cat consul-snapshot.service</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 						# /etc/systemd/system/consul-snapshot.service
 						[Unit]
@@ -583,7 +611,6 @@
 					</aside>
 				</section>
 				<section>
-					Service output
 					<pre><file>❯ systemctl status consul-snapshot.service</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 						(..) 08:45:59: ==> Log data will now stream in as it occurs:
 						(..) 08:45:59: [INFO]  snapshot: Waiting to obtain leadership...
@@ -600,37 +627,21 @@
 						<p></p>
 					</aside>
 				</section>
-				<section>
-					Vault on Consul?<br>
-					Backup the Consul KV store
-					<pre><file>❯ cat /srv/consul/consul-kv-backup.sh</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						#!/bin/bash
-
-						ts=$(date "+%Y%m%d%H%M%S")
-						# assumes $CONSUL_HTTP_ADDR  is set
-						# assumes $CONSUL_HTTP_TOKEN is set
-
-						find /srv/consul/backups -name "*.json" -type f -mtime +7 -exec rm {} \;
-						/usr/bin/consul kv export vault/ > /srv/consul/backups/vault_kv_${ts}.json
-					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
 			</section>
 
 
 			<section>
 				<section><h1>👷</h1><h3>Tokens</h3><h6>Operations</h6></section>
 				<section>
-					<p>Using Vault?</p>
-					Check out the <code>consul</code> and <code>nomad</code> secrets engines.
+					<p>Using Vault?<br>
+					Check out the <code>consul</code><br>
+					and <code>nomad</code> secrets engines</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					Consul
+					<p>Consul</p>
 					<pre><file>Role keyword: <strong>role<u>s</u></strong></file><code data-trim data-noescape><script type="text/template">
 						❯ vault secrets enable consul
 
@@ -652,12 +663,13 @@
 							accessor            86feeb52-368e-691f-ee0d-598d49aca2cb
 							token               2117f9fb-414f-afee-a7d9-381f143b3f70
 					</script></code></pre>
+					<small>Policy <code>operator</code> should by present in Consul</small>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					Nomad
+					<p>Nomad</p>
 					<pre><file>Role keyword: <strong>role</strong></file><code data-trim data-noescape><script type="text/template">
 						❯ vault secrets enable nomad
 
@@ -679,6 +691,7 @@
 							accessor_id        efe76155-4477-5bc3-5220-634750f30567
 							secret_id          79522702-5056-986e-d5d6-360c7b9f6b02
 					</script></code></pre>
+					<small>Policy <code>operator</code> should by present in Nomad</small>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -689,20 +702,15 @@
 			<section>
 				<section><h1>ــــــــــﮩ٨ـ❤️ﮩ٨ـﮩﮩ٨ـ</h1><h3>Metrics / Monitoring</h3></section>
 				<section>
-					<p>Enable metrics</p>
-					<p>They will save you someday</p>
+					<p>Enable metrics<br>
+					They will save you someday</p>
 					<pre><file>❯ cat /etc/nomad.d/prometheus.hcl</file><code data-line-numbers data-trim data-noescape><script type="text/template">
 						telemetry {
 							disable_hostname          = true
 							prometheus_retention_time = "12h"
 						}
 					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					Same goes for Consul and Vault
+					<p>Same goes for Consul and Vault</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -721,7 +729,9 @@
 					</aside>
 				</section>
 				<section>
-					<p>Be sure to monitor and trigger on the basic features</p>
+					<p>Be sure to monitor and<br>
+						trigger on the basic features</p>
+					<br>
 					<ul>
 						<li>Relevant ports listening</li>
 						<li>Vault sealed state</li>
@@ -742,7 +752,11 @@
 			</section>
 
 
-			<section><h1>🙏🏼</h1><h3>Thank you</h3></section>
+			<section>
+				<h1>🙏🏼</h1>
+				<h3>Thank you</h3>
+			</section>
+
 
 		</div>
 
