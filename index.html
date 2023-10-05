@@ -388,9 +388,9 @@
 						#!/bin/bash
 
 						ts=$(date "+%Y%m%d%H%M%S")
-						export VAULT_ADDR=https://127.0.0.1:8200
-						ROLE_ID=dbd8a758-520d-95ba-e965-9f3d54692db1
-						SECRET_ID=9c9c862f-bc4d-5ae2-a8db-65991a04200a
+						# assumes VAULT_ADDR is set
+						# assumes ROLE_ID is set
+						# assumes SECRET_ID is set
 
 						TOKEN=$(/usr/bin/vault write -format=json auth/snapshot/login role_id=$ROLE_ID secret_id=$SECRET_ID | jq -r .auth.client_token)
 						export VAULT_TOKEN=$TOKEN
