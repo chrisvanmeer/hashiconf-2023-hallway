@@ -317,10 +317,9 @@
 					</aside>
 				</section>
 				<section>
-					Enable Vault audit logging
+					Enable Vault file audit logging
 					<pre><code data-trim data-noescape><script type="text/template">
 						❯ vault audit enable file file_path=/var/log/vault/audit.log
-						❯ vault audit enable syslog
 					</script></code></pre>
 					<aside class="notes">
 						<p></p>
@@ -328,6 +327,10 @@
 				</section>
 				<section>
 					No log rotation
+					<pre><code data-trim data-noescape><script type="text/template">
+						❯ ls -lh /var/log/vault/audit.log
+						-rw------- 1 vault vault 5.3G Oct  5 09:31 /var/log/vault/audit.log
+					</script></code></pre>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -354,6 +357,91 @@
 						<p></p>
 					</aside>
 				</section>
+				<section>
+					With custom log rotation
+					<pre><code data-trim data-noescape><script type="text/template">
+						❯ ls -lh /var/log/vault/
+						total 348K
+						-rw------- 1 vault vault 2.3K Sep 29 00:00 audit.2023-09-29.log.gz
+						-rw------- 1 vault vault 1.7K Sep 30 00:00 audit.2023-09-30.log.gz
+						-rw------- 1 vault vault 267K Oct  1 00:00 audit.2023-10-01.log.gz
+						-rw------- 1 vault vault 1.5K Oct  2 00:00 audit.2023-10-02.log.gz
+						-rw------- 1 vault vault 3.8K Oct  2 08:15 audit.2023-10-03.log.gz
+						-rw------- 1 vault vault 2.3K Oct  3 03:38 audit.2023-10-04.log.gz
+						-rw------- 1 vault vault  37K Oct  4 16:01 audit.2023-10-05.log
+						-rw------- 1 vault vault  15K Oct  5 00:00 audit.log
+					</script></code></pre>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
+				<section>
+					Enable Vault syslog audit logging
+					<pre><file>❯ cat /etc/rsyslog.d/30-vault.conf</file><code data-line-numbers data-trim data-noescape><script type="text/template">
+						if $syslogfacility-text == "auth" and
+						   $syslogtag startswith "vault"
+						   then /var/log/vault/syslog.log
+						& stop
+					</script></code></pre>
+					<pre><code data-trim data-noescape><script type="text/template">
+						❯ chmod 770 /var/log/vault/
+						❯ chown vault:syslog /var/log/vault/
+						❯ vault audit enable syslog
+					</script></code></pre>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
+				<section>
+					Query file audit
+					<pre><code data-trim data-noescape><script type="text/template">
+						❯ jq 'select(.time | contains("2023-10-05"))' | \
+								jq -s '.[0]' /var/log/vault/audit.log
+						{
+							"time": "2023-10-05T07:49:30.542609276Z",
+							"type": "request",
+							"auth": {
+								"display_name": "userpass-atcomputing",
+								"policies": [
+									"default",
+									"pol-admin"
+								],
+								(..)
+							}
+							(..)
+						}
+					</script></code></pre>
+					<small>Retrieves first log entry of October 5th</small>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
+				<section>
+					Query syslog audit
+					<pre><code data-trim data-noescape><script type="text/template">
+						❯ grep '^Oct  5 ' /var/log/vault/syslog.log | sed -e 's/^.*\]: //' \
+								-e 's/hmac-sha256:[a-z0-9]*//g' | jq -s '.[0]'
+						{
+							"time": "2023-10-05T09:45:48.501464975Z",
+							"type": "request",
+							"auth": {
+								"token_type": "default"
+							},
+							"request": {
+								"id": "dc631963-51b6-a1df-5a1d-16a1c3dd6809",
+								"operation": "update",
+								"namespace": {
+									"id": "root"
+								},
+								"path": "sys/audit/test"
+							}
+						}
+					</script></code></pre>
+					<small>Retrieves first log entry of October 5th</small>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
 			</section>
 
 
@@ -372,8 +460,8 @@
 						#!/bin/bash
 
 						ts=$(date "+%Y%m%d%H%M%S")
-						# assumes CONSUL_HTTP_ADDR is set
-						# assumes CONSUL_HTTP_TOKEN is set
+						# assumes $CONSUL_HTTP_ADDR  is set
+						# assumes $CONSUL_HTTP_TOKEN is set
 
 						find /srv/consul/backups -name "*.snap" -type f -mtime +7 -exec rm {} \;
 						/usr/bin/consul snapshot save /srv/consul/backups/consul_${ts}.snap
@@ -388,9 +476,9 @@
 						#!/bin/bash
 
 						ts=$(date "+%Y%m%d%H%M%S")
-						# assumes VAULT_ADDR is set
-						# assumes ROLE_ID is set
-						# assumes SECRET_ID is set
+						# assumes $VAULT_ADDR is set
+						# assumes $ROLE_ID    is set
+						# assumes $SECRET_ID  is set
 
 						TOKEN=$(/usr/bin/vault write -format=json auth/snapshot/login role_id=$ROLE_ID secret_id=$SECRET_ID | jq -r .auth.client_token)
 						export VAULT_TOKEN=$TOKEN
@@ -408,8 +496,8 @@
 						#!/bin/bash
 
 						ts=$(date "+%Y%m%d%H%M%S")
-						# assumes NOMAD_ADDR is set
-						# assumes NOMAD_TOKEN is set
+						# assumes $NOMAD_ADDR  is set
+						# assumes $NOMAD_TOKEN is set
 
 						find /srv/nomad/backups -name "*.snap" -type f -mtime +7 -exec rm {} \;
 						/usr/bin/nomad snapshot save /srv/nomad/backups/nomad_${ts}.snap
@@ -503,8 +591,8 @@
 						#!/bin/bash
 
 						ts=$(date "+%Y%m%d%H%M%S")
-						# assumes CONSUL_HTTP_ADDR is set
-						# assumes CONSUL_HTTP_TOKEN is set
+						# assumes $CONSUL_HTTP_ADDR  is set
+						# assumes $CONSUL_HTTP_TOKEN is set
 
 						find /srv/consul/backups -name "*.json" -type f -mtime +7 -exec rm {} \;
 						/usr/bin/consul kv export vault/ > /srv/consul/backups/vault_kv_${ts}.json
