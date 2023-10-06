@@ -249,7 +249,13 @@ body {
 .reveal table {
   margin: auto;
   border-collapse: collapse;
-  border-spacing: 0; }
+  border-spacing: 0;
+  font-size: 0.75em;
+}
+
+.reveal table code {
+  font-size: 0.75em;
+}
 
 .reveal table th {
   font-weight: bold; }
@@ -259,6 +265,14 @@ body {
   text-align: left;
   padding: 0.2em 0.5em 0.2em 0.5em;
   border-bottom: 1px solid; }
+
+.reveal table tbody td i {
+  font-style: italic;
+}
+
+.reveal table tbody td i u {
+  text-decoration: underline;
+}
 
 .reveal table th[align="center"],
 .reveal table td[align="center"] {

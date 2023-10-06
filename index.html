@@ -264,6 +264,46 @@
 						<p></p>
 					</aside>
 				</section>
+				<section>
+					<p>TLS Certificates</p>
+					<table>
+						<thead>
+							<tr>
+								<th>Product</th>
+								<th>SAN(s)</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Consul</td>
+								<td>
+									<code>127.0.0.1</code><br>
+									<code>(client|server).&lt;datacenter>.&lt;domain&gt;</code><br>
+									<i>i.e. <u>server.dc1.consul</u></i>
+								</td>
+							</tr>
+							<tr>
+								<td>Vault</td>
+								<td>
+									<code>127.0.0.1</code><br>
+									<code>((active|standby).)?vault.service.(&lt;datacenter&gt;)?.&lt;domain&gt;</code><br>
+									<i>i.e. <u>active.vault.service.dc1.consul</u></i>
+								</td>
+							</tr>
+							<tr>
+								<td>Nomad</td>
+								<td>
+									<code>127.0.0.1</code><br>
+									<code>(client|server).(&lt;region&gt;|global).&lt;domain&gt;</code><br>
+									<i>i.e. <u>server.global.nomad</u></i>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
 			</section>
 
 
