@@ -13,15 +13,17 @@ The framework comes with a powerful feature set including [nested slides](https:
 
 ---
 
-**This is a forked version and has been altered for the presentation at HashiConf 2023.**
+### This is a forked version and has been altered for the presentation at HashiConf 2023
 
 ### Getting started
 
-- `git clone https://github.com/chrisvanmeer/hashiconf-2023-hallway`
-- `cd hashiconf-2023-hallway`
-- `npm install`
-- `npm start`
-- `firefox http://localhost:8000 &`
+```shell
+git clone https://github.com/chrisvanmeer/hashiconf-2023-hallway
+cd hashiconf-2023-hallway
+npm install
+npm start
+firefox http://localhost:8000 &
+```
 
 `F` for Full Screen  
 `S` for Speakers Notes
