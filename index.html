@@ -173,14 +173,14 @@
 				</section>
 				<section>
 					<p>Terraform</p>
-					<pre><file>❯ cat vault.tf</file><code data-line-numbers="4-6|7|8-11" data-trim data-noescape><script type="text/template">
+					<pre><code data-line-numbers="4-6|7|8-11" data-trim data-noescape><script type="text/template">
 						(..)
 						provisioner "remote-exec" {
 							inline = [
-								"sudo apt update && sudo apt install -y gpg",
+								"sudo apt update && sudo apt -y install gpg",
 								"wget -O- https://apt.releases.hashicorp.com/gpg| gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg >/dev/null",
 								"echo \"deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main\" | sudo tee /etc/apt/sources.list.d/hashicorp.list",
-								"sudo apt update && sudo apt install -y vault",
+								"sudo apt update && sudo apt -y install vault",
 								"sudo mv ${var.tmp_vault_env} /etc/vault.d/vault.env",
 								"sudo mv ${var.tmp_vault_config} /etc/vault.d/vault.hcl",
 								"sudo chown vault:vault /etc/vault.d/vault.env",
@@ -195,7 +195,7 @@
 				</section>
 				<section>
 					<p>Ansible</p>
-					<pre><file>❯ cat vault.yml</file><code data-line-numbers="1-10|12-20|22-31" data-trim data-noescape><script type="text/template">
+					<pre><code data-line-numbers="1-10|12-20|22-31" data-trim data-noescape><script type="text/template">
 						- name: Ensure Hashicorp signing key
 							ansible.builtin.apt_key:
 								url: https://apt.releases.hashicorp.com/gpg
@@ -270,51 +270,22 @@
 			<section>
 				<section><h1>🎟</h1><h3>Tokens</h3><h6>Configuration</h6></section>
 				<section>
+					<p>Bootrapped?<br>
+					You will need tokens</p>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
+				<section>
 					<p>Avoid tokens in main configuration files<br>
+					Sensitive data in <code>ENV</code> variables<br>
 					<small>Sometimes you cannot avoid it</small></p>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
-					<p>Sensitive data in <code>ENV</code> variables<br>
-					<small>Whenever you can</small></p>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
 					<h2>No sensitive data in version control</h2>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					<pre><file>❯ cat /etc/nomad.d/nomad.hcl</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						datacenter = "hashiconf"
-						data_dir   = "/opt/nomad"
-
-						consul = {
-							address = "https://127.0.0.1:8501"
-							token   = "3ebda624-ac52-4e45-8534-1e13b2294194"
-						}
-					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					<pre><file>❯ cat /etc/nomad.d/nomad.hcl</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						datacenter = "hashiconf"
-						data_dir   = "/opt/nomad"
-
-						consul = {
-							address = "https://127.0.0.1:8501"
-						}
-					</script></code></pre>
-					<pre><file>❯ cat /etc/nomad.d/nomad.env</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						CONSUL_HTTP_TOKEN="3ebda624-ac52-4e45-8534-1e13b2294194"
-					</script></code></pre>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -326,19 +297,11 @@
 				<section><h1>🗃️</h1><h3>Logs / Logging</h3></section>
 				<section>
 					<p>Consul + Nomad</p>
-					<pre><file>❯ cat /etc/consul.d/logging.hcl</file><code data-line-numbers data-trim data-noescape><script type="text/template">
+					<pre><code data-line-numbers data-trim data-noescape><script type="text/template">
 						enable_syslog        = true
 						log_level            = "INFO"
 						log_json             = false
-						log_file             = "/var/log/consul/consul.log"
-						log_rotate_duration  = "86400s"
-						log_rotate_max_files = 7
-					</script></code></pre>
-					<pre><file>❯ cat /etc/nomad.d/logging.hcl</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						enable_syslog        = true
-						log_level            = "INFO"
-						log_json             = false
-						log_file             = "/var/log/nomad/nomad.log"
+						log_file             = "/var/log/{{ product }}/{{ product }}.log"
 						log_rotate_duration  = "86400s"
 						log_rotate_max_files = 7
 					</script></code></pre>
@@ -353,8 +316,9 @@
 					</aside>
 				</section>
 				<section>
-					<p>Enable Vault file audit logging</p>
+					<p>Enable Vault audit logging</p>
 					<pre><code data-trim data-noescape><script type="text/template">
+						❯ vault audit enable syslog
 						❯ vault audit enable file file_path=/var/log/vault/audit.log
 					</script></code></pre>
 					<aside class="notes">
@@ -411,82 +375,6 @@
 						<p></p>
 					</aside>
 				</section>
-				<section>
-					<p>Enable Vault syslog audit logging</p>
-					<pre><code data-trim data-noescape><script type="text/template">
-						❯ vault audit enable syslog
-					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					Vault syslog in separate file
-					<pre><file>❯ cat /etc/rsyslog.d/30-vault.conf</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						if $syslogfacility-text == "auth" and
-						   $syslogtag startswith "vault"
-						   then /var/log/vault/syslog.log
-						& stop
-					</script></code></pre>
-					<pre><code data-trim data-noescape><script type="text/template">
-						❯ chmod 770 /var/log/vault/
-						❯ chown vault:syslog /var/log/vault/
-						❯ systemctl restart rsyslog.service
-					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					<p>Query file audit</p>
-					<pre><code data-trim data-noescape><script type="text/template">
-						❯ jq 'select(.time | contains("2023-10-04"))' | \
-								jq -s '.[0]' /var/log/vault/audit.log
-						{
-							"time": "2023-10-04T07:49:30.542609276Z",
-							"type": "request",
-							"auth": {
-								"display_name": "userpass-atcomputing",
-								"policies": [
-									"default",
-									"pol-admin"
-								],
-								(..)
-							}
-							(..)
-						}
-					</script></code></pre>
-					<small>Retrieves first log entry of October 4th</small>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					<p>Query syslog audit</p>
-					<pre><code data-trim data-noescape><script type="text/template">
-						❯ grep '^Oct  5 ' /var/log/vault/syslog.log | sed -e 's/^.*\]: //' \
-								-e 's/hmac-sha256:[a-z0-9]*//g' | jq -s '.[0]'
-						{
-							"time": "2023-10-05T09:45:48.501464975Z",
-							"type": "request",
-							"auth": {
-								"token_type": "default"
-							},
-							"request": {
-								"id": "dc631963-51b6-a1df-5a1d-16a1c3dd6809",
-								"operation": "update",
-								"namespace": {
-									"id": "root"
-								},
-								"path": "sys/audit/test"
-							}
-						}
-					</script></code></pre>
-					<small>Retrieves first log entry of October 5th</small>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
 			</section>
 
 
@@ -500,69 +388,22 @@
 					</aside>
 				</section>
 				<section>
-					<p>Consul</p>
-					<pre><file>❯ cat /srv/consul/consul-snapshot.sh</file><code data-line-numbers data-trim data-noescape><script type="text/template">
+					<p>Example</p>
+					<pre><code data-line-numbers="|10-14" data-trim data-noescape><script type="text/template">
 						#!/bin/bash
+						# Assumes correct environment variables
+						# for authentication have been set
 
 						ts=$(date "+%Y%m%d%H%M%S")
-						# assumes $CONSUL_HTTP_ADDR  is set
-						# assumes $CONSUL_HTTP_TOKEN is set
 
-						find /srv/consul/backups -name "*.snap" -type f -mtime +7 -exec rm {} \;
-						/usr/bin/consul snapshot save /srv/consul/backups/consul_${ts}.snap
-					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					<p>Vault</p>
-					<pre><file>❯ cat /srv/vault/vault-snapshot.sh</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						#!/bin/bash
+						find /srv/backups -name "*.snap" -type f -mtime +7 -exec rm {} \;
+						/usr/bin/${PRODUCT} snapshot save /srv/backups/${PRODUCT}_${ts}.snap
 
-						ts=$(date "+%Y%m%d%H%M%S")
-						# assumes $VAULT_ADDR is set
-						# assumes $ROLE_ID    is set
-						# assumes $SECRET_ID  is set
-
-						TOKEN=$(/usr/bin/vault write -format=json auth/snapshot/login role_id=$ROLE_ID secret_id=$SECRET_ID | jq -r .auth.client_token)
-						export VAULT_TOKEN=$TOKEN
-
-						find /srv/vault/backups -name "*.snap" -type f -mtime +7 -exec rm {} \;
-						/usr/bin/vault operator raft snapshot save /srv/vault/backups/vault_${ts}.snap
-					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					<p>Vault on Consul?<br>
-					Backup the Consul KV store</p>
-					<pre><file>❯ cat /srv/consul/consul-kv-backup.sh</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						#!/bin/bash
-
-						ts=$(date "+%Y%m%d%H%M%S")
-						# assumes $CONSUL_HTTP_ADDR  is set
-						# assumes $CONSUL_HTTP_TOKEN is set
-
-						find /srv/consul/backups -name "*.json" -type f -mtime +7 -exec rm {} \;
-						/usr/bin/consul kv export vault/ > /srv/consul/backups/vault_kv_${ts}.json
-					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					<p>Nomad</p>
-					<pre><file>❯ cat /srv/nomad/nomad-snapshot.sh</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						#!/bin/bash
-
-						ts=$(date "+%Y%m%d%H%M%S")
-						# assumes $NOMAD_ADDR  is set
-						# assumes $NOMAD_TOKEN is set
-
-						find /srv/nomad/backups -name "*.snap" -type f -mtime +7 -exec rm {} \;
-						/usr/bin/nomad snapshot save /srv/nomad/backups/nomad_${ts}.snap
+						if [ $consul_storage_backend ]
+						then
+							find /srv/backups -name "*.json" -type f -mtime +7 -exec rm {} \;
+							/usr/bin/${PRODUCT} kv export vault/ > /srv/backups/vault_kv_${ts}.json
+						fi
 					</script></code></pre>
 					<aside class="notes">
 						<p></p>
@@ -576,7 +417,7 @@
 					</aside>
 				</section>
 				<section>
-					<pre><file>❯ cat /etc/consul-snapshot.d/consul-snapshot.json</file><code data-line-numbers="|8-9|15-17" data-trim data-noescape><script type="text/template">
+					<pre><code data-line-numbers="|8-9|15-17" data-trim data-noescape><script type="text/template">
 						{
 							"snapshot_agent": {
 								"http_addr": "127.0.0.1:8501",
@@ -601,48 +442,6 @@
 						<p></p>
 					</aside>
 				</section>
-				<section>
-					<pre><file>❯ systemctl cat consul-snapshot.service</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						# /etc/systemd/system/consul-snapshot.service
-						[Unit]
-						Description="HashiCorp Consul Snapshot Agent"
-						Documentation=https://www.consul.io/
-						Requires=network-online.target
-						After=consul.service
-						ConditionFileNotEmpty=/etc/consul-snapshot.d/consul-snapshot.json
-
-						[Service]
-						User=consul
-						Group=consul
-						ExecStart=/usr/bin/consul snapshot agent -config-dir=/etc/consul-snapshot.d/
-						KillMode=process
-						Restart=on-failure
-						LimitNOFILE=65536
-
-						[Install]
-						WantedBy=multi-user.target
-					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					<pre><file>❯ systemctl status consul-snapshot.service</file><code data-line-numbers data-trim data-noescape><script type="text/template">
-						(..) 08:45:59: ==> Log data will now stream in as it occurs:
-						(..) 08:45:59: [INFO]  snapshot: Waiting to obtain leadership...
-						(..) 08:45:59: [INFO]  snapshot: Obtained leadership
-						(..) 08:45:59: [INFO]  snapshot: Saved snapshot: id=1696401959948027184
-						(..) 09:46:00: [INFO]  snapshot: Saved snapshot: id=1696405560105547417
-						(..) 10:46:00: [INFO]  snapshot: Saved snapshot: id=1696409160267662922
-						(..) 11:46:00: [INFO]  snapshot: Saved snapshot: id=1696412760404992817
-						(..) 12:46:00: [INFO]  snapshot: Saved snapshot: id=1696416360610661587
-						(..) 13:46:00: [INFO]  snapshot: Saved snapshot: id=1696419960748808921
-						(..) 14:46:00: [INFO]  snapshot: Saved snapshot: id=1696423560931806587
-					</script></code></pre>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
 			</section>
 
 
@@ -657,57 +456,27 @@
 					</aside>
 				</section>
 				<section>
-					<p>Consul</p>
-					<pre><file>Role keyword: <strong>role<u>s</u></strong></file><code data-trim data-noescape><script type="text/template">
-						❯ vault secrets enable consul
-
-						❯ vault write consul/config/access \
-								address="127.0.0.1:8501" \
-								scheme="https" \
-								token="<consul-token-here>"
-
-						❯ vault write consul/roles/operator \
-								consul_policies="operator" \
-								ttl="8h"
-
+					<p>Short lived credentials</p>
+					<pre><code data-trim data-noescape><script type="text/template">
 						❯ vault read consul/creds/operator
 							Key                 Value
 							---                 -----
 							lease_id            consul/creds/operator/EfssiLzg2Qt9zAbFrx5xBuOk
-							lease_duration      8h
+							lease_duration      4h
 							lease_renewable     true
 							accessor            86feeb52-368e-691f-ee0d-598d49aca2cb
 							token               2117f9fb-414f-afee-a7d9-381f143b3f70
-					</script></code></pre>
-					<small>Policy <code>operator</code> should by present in Consul</small>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					<p>Nomad</p>
-					<pre><file>Role keyword: <strong>role</strong></file><code data-trim data-noescape><script type="text/template">
-						❯ vault secrets enable nomad
-
-						❯ vault write nomad/config/lease ttl=8h
-
-						❯ vault write nomad/config/access \
-								address="https://127.0.0.1:4646" \
-								token="<nomad-token-here>"
-
-						❯ vault write nomad/role/operator \
-								policies="operator"
 
 						❯ vault read nomad/creds/operator
 							Key                Value
 							---                -----
 							lease_id           nomad/creds/operator/wo7dGKyPwhH2236UDuGWEd3j
-							lease_duration     8h
+							lease_duration     4h
 							lease_renewable    true
 							accessor_id        efe76155-4477-5bc3-5220-634750f30567
 							secret_id          79522702-5056-986e-d5d6-360c7b9f6b02
 					</script></code></pre>
-					<small>Policy <code>operator</code> should by present in Nomad</small>
+					<small>Policy <code>operator</code> should by present in Consul and Nomad</small>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -720,25 +489,11 @@
 				<section>
 					<p>Enable metrics<br>
 					They will save you someday</p>
-					<pre><file>❯ cat /etc/nomad.d/prometheus.hcl</file><code data-line-numbers data-trim data-noescape><script type="text/template">
+					<pre><code data-line-numbers data-trim data-noescape><script type="text/template">
 						telemetry {
 							disable_hostname          = true
 							prometheus_retention_time = "12h"
 						}
-					</script></code></pre>
-					<p>Same goes for Consul and Vault</p>
-					<aside class="notes">
-						<p></p>
-					</aside>
-				</section>
-				<section>
-					<p>Vault token capabilities</p>
-					<pre><code data-trim data-noescape><script type="text/template">
-						$ vault policy write pol-metrics - <<EOF
-						path "sys/metrics" {
-							capabilities = [ "read" ]
-						}
-						EOF
 					</script></code></pre>
 					<aside class="notes">
 						<p></p>
