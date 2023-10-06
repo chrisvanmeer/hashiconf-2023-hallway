@@ -421,7 +421,7 @@
 						{
 							"snapshot_agent": {
 								"http_addr": "127.0.0.1:8501",
-								"token": "99bdf0ce-232b-666e-912c-2649a055ca2f",
+								"token": "<consul-token-here>",
 								"datacenter": "",
 								"license_path": "/etc/consul.d/consul.hclic",
 								"snapshot": {
@@ -459,13 +459,13 @@
 					<p>Short lived credentials</p>
 					<pre><code data-trim data-noescape><script type="text/template">
 						❯ vault read consul/creds/operator
-							Key                 Value
-							---                 -----
-							lease_id            consul/creds/operator/EfssiLzg2Qt9zAbFrx5xBuOk
-							lease_duration      4h
-							lease_renewable     true
-							accessor            86feeb52-368e-691f-ee0d-598d49aca2cb
-							token               2117f9fb-414f-afee-a7d9-381f143b3f70
+							Key                Value
+							---                -----
+							lease_id           consul/creds/operator/EfssiLzg2Qt9zAbFrx5xBuOk
+							lease_duration     4h
+							lease_renewable    true
+							accessor           86feeb52-368e-691f-ee0d-598d49aca2cb
+							token              2117f9fb-414f-afee-a7d9-381f143b3f70
 
 						❯ vault read nomad/creds/operator
 							Key                Value
