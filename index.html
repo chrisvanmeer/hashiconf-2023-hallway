@@ -23,23 +23,24 @@
 
 
 			<section>
-        <h2>Things I learned<br>
-        while integrating<br>
-        HashiCorp products<br>
-        together</h2>
-      </section>
+				<h2>Things I learned<br>
+					while integrating<br>
+					HashiCorp products<br>
+					together</h2>
+			</section>
 
 
 			<section>
-        <img height="200" data-src="at.png">
-        <h3>Chris van Meer</h3>
+				<img height="200" data-src="at.png">
+				<h3>Chris van Meer</h3>
 				<aside class="notes">
 					<p>Welcome.</p>
 					<p>My name is Chris van Meer and I live in The Netherlands.</p>
-					<p>I am a consultant and a trainer at AT Computing where we help our customers implement open source solutions.</p>
+					<p>I am a consultant and a trainer at AT Computing where we help our customers implement open source
+						solutions.</p>
 					<p>I am also a HashiCorp Ambassador and one of the Amsterdam HUG leaders.</p>
 				</aside>
-      </section>
+			</section>
 
 
 			<section>
@@ -53,7 +54,10 @@
 
 
 			<section>
-				<section><h1>📖</h1><h3>Documentation</h3></section>
+				<section>
+					<h1>📖</h1>
+					<h3>Documentation</h3>
+				</section>
 				<section>
 					<p>No integration guide</p>
 					<aside class="notes">
@@ -63,16 +67,20 @@
 				<section>
 					<p>Scattered</p>
 					<aside class="notes">
-						<p>It is all scattered. Sure, the respective products list all available options, but no guide on which ones to use in which specific (integration) cases.</p>
+						<p>It is all scattered. Sure, the respective products list all available options, but no guide on which ones
+							to use in which specific (integration) cases.</p>
 						<p>You may not even find basic things like the <code>service_registration</code> stanza of Vault.</p>
 					</aside>
 				</section>
 				<section data-auto-animate data-auto-animate-easing="cubic-bezier(0.770, 0.000, 0.175, 1.000)">
 					<p>Separate products</p>
 					<div class="r-hstack justify-center">
-						<div data-id="box1" data-auto-animate-delay="0" style="background: #e03875; width: 150px; height: 100px; margin: 10px;"></div>
-						<div data-id="box2" data-auto-animate-delay="0.1" style="background: #ffd814; width: 150px; height: 100px; margin: 10px;"></div>
-						<div data-id="box3" data-auto-animate-delay="0.2" style="background: #00ca8e; width: 150px; height: 100px; margin: 10px;"></div>
+						<div data-id="box1" data-auto-animate-delay="0"
+							style="background: #e03875; width: 150px; height: 100px; margin: 10px;"></div>
+						<div data-id="box2" data-auto-animate-delay="0.1"
+							style="background: #ffd814; width: 150px; height: 100px; margin: 10px;"></div>
+						<div data-id="box3" data-auto-animate-delay="0.2"
+							style="background: #00ca8e; width: 150px; height: 100px; margin: 10px;"></div>
 					</div>
 				</section>
 				<section data-auto-animate data-auto-animate-easing="cubic-bezier(0.770, 0.000, 0.175, 1.000)">
@@ -87,7 +95,10 @@
 
 
 			<section>
-				<section><h1>➰</h1><h3>Dependencies</h3></section>
+				<section>
+					<h1>➰</h1>
+					<h3>Dependencies</h3>
+				</section>
 				<section>
 					<p>Determine what relies on what</p>
 					<aside class="notes">
@@ -96,15 +107,18 @@
 				</section>
 				<section>
 					<p>Vault storage backend<br>on Consul (KV)<br>
-					<small>- vs -</small><br>
-					Vault Integrated Storage</p>
+						<small>- vs -</small><br>
+						Vault Integrated Storage
+					</p>
 					<aside class="notes">
-						<p>Think of what the differences might be if you would were to choose the <code>consul</code> storage backend for Vault. Vault will automatically register itself with Consul, that's a big plus...but now also relies on the Consul leader state.</p>
+						<p>Think of what the differences might be if you would were to choose the <code>consul</code> storage
+							backend for Vault. Vault will automatically register itself with Consul, that's a big plus...but now also
+							relies on the Consul leader state.</p>
 					</aside>
 				</section>
 				<section>
 					<p>No service registration?<br>
-					No Consul power<br><br></p>
+						No Consul power<br><br></p>
 					<pre><file><strong>With</strong> service registration</file><code data-trim data-noescape><script type="text/template">
 						$ dig @127.0.0.1 -p 8600 +noall +question +answer active.vault.service.consul
 						;active.vault.service.consul. IN A
@@ -116,12 +130,14 @@
 						;active.vault.service.consul.	IN	A
 					</script></code></pre>
 					<aside class="notes">
-						<p>If you choose Integrated Storage and you don't include the Consul <code>service_registration</code> stanza into your Vault configuration, Vault will not automatically register itself. Thus not benefitting of the Consul health checks and tags (think of the <code>active</code> tag for instance).</p>
+						<p>If you choose Integrated Storage and you don't include the Consul <code>service_registration</code>
+							stanza into your Vault configuration, Vault will not automatically register itself. Thus not benefitting
+							of the Consul health checks and tags (think of the <code>active</code> tag for instance).</p>
 					</aside>
 				</section>
 				<section>
 					<p>No Consul power?<br>
-					Then what about Nomad?</p>
+						Then what about Nomad?</p>
 					<pre><file>❯ cat /etc/nomad.d/vault.hcl</file><code data-line-numbers="3" data-trim data-noescape><script type="text/template">
 						vault {
 							enabled          = true
@@ -152,8 +168,9 @@
 				</section>
 				<section>
 					<p>Consul storage backend for Vault?<br>
-					Backup conundrum<br>
-					<small>More on that later...</small></p>
+						Backup conundrum<br>
+						<small>More on that later...</small>
+					</p>
 					<aside class="notes">
 						<p>We'll see what kind of implications this has more towards the end of the session.</p>
 					</aside>
@@ -162,11 +179,15 @@
 
 
 			<section>
-				<section><h1>🚚</h1><h3>Deployment</h3></section>
+				<section>
+					<h1>🚚</h1>
+					<h3>Deployment</h3>
+				</section>
 				<section>
 					<p>IaC<br>
-					<small>- vs -</small><br>
-					CaC</p>
+						<small>- vs -</small><br>
+						CaC
+					</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -228,10 +249,10 @@
 								- vault.hcl
 								- vault.env
 						</script></code></pre>
-						<aside class="notes">
-							<p></p>
-						</aside>
-					</section>
+					<aside class="notes">
+						<p></p>
+					</aside>
+				</section>
 				<section>
 					<p>Terraform & Ansible</p>
 					<pre><file>❯ cat inventory.tf</file><code data-line-numbers data-trim data-noescape><script type="text/template">
@@ -259,7 +280,7 @@
 				</section>
 				<section>
 					<p><code>-config-dir</code><br>
-					Segment your configuration</p>
+						Segment your configuration</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -308,18 +329,24 @@
 
 
 			<section>
-				<section><h1>🎟</h1><h3>Tokens</h3><h6>Configuration</h6></section>
+				<section>
+					<h1>🎟</h1>
+					<h3>Tokens</h3>
+					<h6>Configuration</h6>
+				</section>
 				<section>
 					<p>Bootstrapped?<br>
-					You will need tokens</p>
+						You will need tokens</p>
+					<small>Almost every request needs a token...Consul DNS included</small>
 					<aside class="notes">
 						<p></p>
 					</aside>
 				</section>
 				<section>
 					<p>Avoid tokens in main configuration files<br>
-					Sensitive data in <code>ENV</code> variables<br>
-					<small>Sometimes you cannot avoid it</small></p>
+						Sensitive data in <code>ENV</code> variables<br>
+						<small>Sometimes you cannot avoid it</small>
+					</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -334,7 +361,10 @@
 
 
 			<section>
-				<section><h1>🗃️</h1><h3>Logs / Logging</h3></section>
+				<section>
+					<h1>🗃️</h1>
+					<h3>Logs / Logging</h3>
+				</section>
 				<section>
 					<p>Consul + Nomad</p>
 					<pre><code data-line-numbers data-trim data-noescape><script type="text/template">
@@ -419,10 +449,13 @@
 
 
 			<section>
-				<section><h1>🗄</h1><h3>Backup</h3></section>
+				<section>
+					<h1>🗄</h1>
+					<h3>Backup</h3>
+				</section>
 				<section>
 					<p>Community Edition?<br>
-					Manual backup</p>
+						Manual backup</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -451,7 +484,7 @@
 				</section>
 				<section>
 					<p>Enterprise Edition?<br>
-					Snapshot agent</p>
+						Snapshot agent</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -486,11 +519,15 @@
 
 
 			<section>
-				<section><h1>👷</h1><h3>Tokens</h3><h6>Operations</h6></section>
+				<section>
+					<h1>👷</h1>
+					<h3>Tokens</h3>
+					<h6>Operations</h6>
+				</section>
 				<section>
 					<p>Using Vault?<br>
-					Check out the <code>consul</code><br>
-					and <code>nomad</code> secrets engines</p>
+						Check out the <code>consul</code><br>
+						and <code>nomad</code> secrets engines</p>
 					<aside class="notes">
 						<p></p>
 					</aside>
@@ -525,10 +562,13 @@
 
 
 			<section>
-				<section><h1>ــــــــــﮩ٨ـ❤️ﮩ٨ـﮩﮩ٨ـ</h1><h3>Metrics / Monitoring</h3></section>
+				<section>
+					<h1>ــــــــــﮩ٨ـ❤️ﮩ٨ـﮩﮩ٨ـ</h1>
+					<h3>Metrics / Monitoring</h3>
+				</section>
 				<section>
 					<p>Enable metrics<br>
-					They will save you someday</p>
+						They will save you someday</p>
 					<pre><code data-line-numbers data-trim data-noescape><script type="text/template">
 						telemetry {
 							disable_hostname          = true
@@ -595,20 +635,20 @@
 			// Learn about plugins: https://revealjs.com/plugins/
 			plugins: [RevealMarkdown, RevealHighlight, RevealNotes, Verticator]
 		});
-		Reveal.addEventListener('slidechanged', function(event) {
+		Reveal.addEventListener('slidechanged', function (event) {
 
 			//retrieves all the .line elements from the current slide
 			const lines = document.querySelectorAll('.line');
 
-			var white     = '#ffffff';
-			var consul    = '#e03875';
-			var nomad     = '#00ca8e';
+			var white = '#ffffff';
+			var consul = '#e03875';
+			var nomad = '#00ca8e';
 			var terraform = '#7b42bc';
-			var packer    = '#02a8ef';
-			var vault     = '#ffd814';
-			var boundary  = '#f24c53';
-			var waypoint  = '#14c6cb';
-			var vagrant   = '#1868f2';
+			var packer = '#02a8ef';
+			var vault = '#ffd814';
+			var boundary = '#f24c53';
+			var waypoint = '#14c6cb';
+			var vagrant = '#1868f2';
 
 			//color map where each slide index is coupled to a given color
 			const colormap = [
